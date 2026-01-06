@@ -1,37 +1,38 @@
 #include "Game.hpp"
 
-#include <SFML/Graphics.hpp>
 #include <time.h>
-#include <vector>
 #include <iostream>
 
 Game::Game()
-        : field(tilesDown, std::vector<int>(tilesAcross, unknownTile)),
-        window(sf::VideoMode({tilesAcross*tileSize,
-                tilesDown*tileSize}),"Minesweeper"),
-        t("assets/images/minesweeper_tiles.png"),
-        s(t)
+    : tileSize {32}, tilesAcross {10}, tilesDown {10}, mineCount {25},
+    window(sf::VideoMode({1u*tilesAcross*tileSize,
+                1u*tilesDown*tileSize}),"Minesweeper"),
+    t("assets/images/minesweeper_tiles.png"),
+    s(t)
 {
-    for (auto& row : field)
-        for (int& val : row)
-            val = unknownTile;
-    
-    window.setFramerateLimit(60);
+    window.setFramerateLimit(frameRate);
 
     srand(time(0));
 }
 
-void Game::run()
+void Game::start()
+{
+    Board board(tilesAcross, tilesDown, mineCount);
+    run(board);
+}
+
+void Game::run(Board& board)
 {
     while (window.isOpen())
     {
-        eventLoop();
-        draw();
+        eventLoop(board);
+        draw(board);
     }
 }
 
-void Game::eventLoop()
-{
+void Game::eventLoop(Board& board)
+{   
+    Minefield& minefield = board.getMinefield(); 
     while (const std::optional event = window.pollEvent())
     {
         if (event->is<sf::Event::Closed>())
@@ -55,7 +56,7 @@ void Game::eventLoop()
                 int mouseX {mouseButtonPressed->position.x};
                 int mouseY {mouseButtonPressed->position.y};
 
-                field[mouseX/tileSize][mouseY/tileSize] = flagTile;
+                minefield[mouseY/tileSize][mouseX/tileSize].toggleFlag();
             }
             else if (mouseButtonPressed->button == sf::Mouse::Button::Left)
             {
@@ -64,23 +65,46 @@ void Game::eventLoop()
                 int mouseX {mouseButtonPressed->position.x};
                 int mouseY {mouseButtonPressed->position.y};
 
-                field[mouseX/tileSize][mouseY/tileSize] = zeroTile;
+                minefield[mouseY/tileSize][mouseX/tileSize].reveal();
             }
         }
     }
 }
 
-void Game::draw()
+void Game::draw(Board& board)
 {
     window.clear(sf::Color::White);
+
+    Minefield& minefield = board.getMinefield();
     
-    for (int i = 0; i < tilesAcross; i++)
+    for (int y = 0; y < tilesDown; y++)
     {
-        for (int j = 0; j < tilesDown; j++)
+        for (int x = 0; x < tilesAcross; x++)
         {
+            int spriteLocation;
+            if (!minefield[y][x].isRevealed())
+            {
+                if (minefield[y][x].isFlagged())
+                {
+                    spriteLocation = flagTile;
+                }
+                else
+                {
+                    spriteLocation = emptyTile;
+                }
+            }
+            else if (minefield[y][x].isMine())
+            {
+                spriteLocation = mineTile;
+            }
+            else
+            {
+                spriteLocation = minefield[y][x].getAdjacentMines();
+            }
+
             s.setTextureRect(sf::IntRect(
-                        {field[i][j]*tileSize,0},{tileSize,tileSize}));
-            s.setPosition({1.f*i*tileSize,1.f*j*tileSize});
+                        {spriteLocation*tileSize,0},{tileSize,tileSize}));
+            s.setPosition({1.f*x*tileSize,1.f*y*tileSize});
             window.draw(s);
         }
     }

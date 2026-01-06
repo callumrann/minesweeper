@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Board.hpp"
+
 #include <SFML/Graphics.hpp>
 #include <vector>
 
@@ -7,32 +9,32 @@ class Game
 {
 public:
     Game();
-    void run();
+    void start();
 
 private:
     // Variables
-    const int tileSize {32};
-
-    const int tilesAcross {10};
-    const int tilesDown {10};
-
-    const int mineCount {25};
-    bool firstLeftClick {1};
-
-    enum TileCode 
+    enum SpriteLocation
     {
-        zeroTile, oneTile, twoTile, threeTile, fourTile, fiveTile,
-        sixTile, sevenTile, eightTile, mineTile, unknownTile, flagTile,
+        mineTile = 9, emptyTile, flagTile
     };
 
-    std::vector<std::vector<int>> field;
+    const int tileSize;
+
+    const int tilesAcross;
+    const int tilesDown;
+
+    const int mineCount;
+    bool firstLeftClick {1};
 
     sf::RenderWindow window;
+    const int frameRate {60};
     
     sf::Texture t;
     sf::Sprite s;
 
     // Functions
-    void eventLoop();
-    void draw();
+    Board createBoard();
+    void run(Board& board);
+    void eventLoop(Board& board);
+    void draw(Board& board);
 };
