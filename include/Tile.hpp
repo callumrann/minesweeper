@@ -16,7 +16,7 @@ public:
 
     // Setters
     void setMine(bool value);
-    void setAdjacentMines(int count);
+    void incrementAdjacentMines();
 
     // Getters
     bool isMine() const;

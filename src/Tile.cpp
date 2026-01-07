@@ -17,9 +17,9 @@ void Tile::setMine(bool value)
     mine = value;
 }
 
-void Tile::setAdjacentMines(int count)
+void Tile::incrementAdjacentMines()
 {
-    adjacentMines = count;
+    adjacentMines++;
 }
 
 // Getters

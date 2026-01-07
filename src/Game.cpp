@@ -1,6 +1,5 @@
 #include "Game.hpp"
 
-#include <time.h>
 #include <iostream>
 
 Game::Game()
@@ -11,8 +10,6 @@ Game::Game()
     s(t)
 {
     window.setFramerateLimit(frameRate);
-
-    srand(time(0));
 }
 
 void Game::start()
