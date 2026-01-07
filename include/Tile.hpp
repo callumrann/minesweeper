@@ -14,8 +14,8 @@ public:
     void reveal();
     void toggleFlag();
 
-    // Setters
-    void setMine(bool value);
+    // Modifying balues
+    void placeMine();
     void incrementAdjacentMines();
 
     // Getters

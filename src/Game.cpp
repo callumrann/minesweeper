@@ -62,7 +62,13 @@ void Game::eventLoop(Board& board)
                 int mouseX {mouseButtonPressed->position.x};
                 int mouseY {mouseButtonPressed->position.y};
 
-                minefield[mouseY/tileSize][mouseX/tileSize].reveal();
+                if (firstLeftClick)
+                {
+                    firstLeftClick = 0;
+                    board.placeMines(mineCount, mouseX/tileSize,mouseY/tileSize);
+                }
+                
+                board.revealTiles(mouseX/tileSize, mouseY/tileSize);
             }
         }
     }

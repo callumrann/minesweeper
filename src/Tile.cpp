@@ -8,13 +8,17 @@ void Tile::reveal()
 
 void Tile::toggleFlag()
 {
-    state = State::flagged;
+    if (state == State::flagged)
+        state = State::hidden;
+
+    else if (state == State::hidden)
+        state = State::flagged;
 }
 
-// Setters
-void Tile::setMine(bool value)
+// Modifying values
+void Tile::placeMine()
 {
-    mine = value;
+    mine = 1;
 }
 
 void Tile::incrementAdjacentMines()
