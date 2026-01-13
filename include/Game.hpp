@@ -24,14 +24,24 @@ private:
     const int tilesDown;
 
     const int mineCount;
+    int flagCount {0};
     bool firstLeftClick {1};
 
     sf::RenderWindow window;
     const int frameRate {60};
     
-    sf::Texture t;
-    sf::Sprite s;
+    sf::Texture tileTexture;
+    sf::Sprite tileSprite;
 
+    sf::Texture statTexture;
+    sf::Sprite statSprite;
+
+    sf::Font font;
+    sf::Text timerText;
+    sf::Text flagText;
+    
+    sf::Clock gameClock;
+    
     // Functions
     Board createBoard();
     void run(Board& board);

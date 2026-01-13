@@ -12,7 +12,7 @@ public:
 
     // State changes
     void reveal();
-    void toggleFlag();
+    int toggleFlag();
 
     // Modifying balues
     void placeMine();

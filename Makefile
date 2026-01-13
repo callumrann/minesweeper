@@ -6,6 +6,7 @@ LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system
 # Directories
 SRCDIR = src
 OBJDIR = build
+HDRDIR = include
 BINDIR = bin
 
 # Source and object files

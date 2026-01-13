@@ -20,15 +20,8 @@ Board::Board(int tilesAcross, int tilesDown, int mineCount)
     : tilesAcross {tilesAcross},
     tilesDown {tilesDown},
     mineCount {mineCount},
-    minefield(tilesDown, std::vector<Tile>(tilesDown))
+    minefield(tilesDown, std::vector<Tile>(tilesAcross))
 {
-    for (int y = 0; y < tilesDown; y++)
-    {
-        for (int x = 0; x < tilesAcross; x++)
-        {
-            minefield[y][x] = Tile{};
-        }
-    }
 }
 
 void Board::placeMines(int mineCount, int xClick, int yClick)
@@ -65,34 +58,38 @@ void Board::placeMines(int mineCount, int xClick, int yClick)
 
 void Board::revealTiles(int x, int y)
 {
-    if (minefield[y][x].isFlagged())
+    if (!inBounds(x, y, tilesAcross, tilesDown))
         return;
 
-    if (minefield[y][x].getAdjacentMines() != 0)
-    {
-        minefield[y][x].reveal();
+    Tile& tile = minefield[y][x];
+
+    if (tile.isRevealed() || tile.isFlagged())
         return;
-    }
+
+    tile.reveal();
+
+    if (tile.isMine() || tile.getAdjacentMines() != 0)
+        return;
 
     for (int j = -1; j <= 1; j++)
         for (int k = -1; k <= 1; k++)
         {
-            if (!inBounds(x+k,y+j,tilesAcross,tilesDown))
+            if (j == 0 && k == 0)
                 continue;
-            
-            if (!minefield[y+j][x+k].isRevealed())
-            {
-                minefield[y+j][x+k].reveal();
 
-                if (minefield[y+j][x+k].getAdjacentMines() == 0)
-                {
-                    revealTiles(x+k,y+j);
-                }
-            }
+            revealTiles(x + k, y + j);
         }
 }
+
 
 Minefield& Board::getMinefield()
 {
     return minefield;
+}
+
+bool Board::clickOnBoard(int mouseX, int mouseY)
+{
+    return (mouseX >= 0 && mouseX < tilesAcross &&
+            mouseY >= 0 && mouseY < tilesDown);
+
 }

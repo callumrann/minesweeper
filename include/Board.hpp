@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Tile.hpp"
 
 #include <vector>
@@ -11,7 +13,10 @@ public:
     
     void placeMines(int count, int xClick, int yClick);
     void revealTiles(int x, int y);
+
     Minefield& getMinefield();
+
+    bool clickOnBoard(int mouseX, int mouseY);
 
 private:
     // Variables
